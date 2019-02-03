@@ -56,8 +56,9 @@ namespace SSH
 
         public static bool InitializeTrustedHostFile(PSHostUserInterface PSHostUI)
         {
-            var hostkeys = new List<TrustedHost>(){};
-            hostkeys.Add(new TrustedHost("Server1","a0:a0:a0:a0:a0:a0:a0:a0:a0:a0:a0:a0:a0:a0:a0:a0"));
+            var hostkeys = new List<TrustedHost>(){
+                new TrustedHost("Server1","a0:a0:a0:a0:a0:a0:a0:a0:a0:a0:a0:a0:a0:a0:a0:a0")
+            };
             try {
                 string jsonkeys = JsonConvert.SerializeObject(hostkeys, Formatting.Indented);
                 File.WriteAllText(FilePath, jsonkeys);
@@ -78,7 +79,9 @@ namespace SSH
             var hostkeys = new List<TrustedHost>();
             var json = File.ReadAllText(FilePath);
             List<TrustedHost> currentHostkeys = new List<TrustedHost>();
-            currentHostkeys.AddRange(JsonConvert.DeserializeObject<List<TrustedHost>>(json));
+            var jObj = JsonConvert.DeserializeObject<dynamic>(json);
+            //JsonSerializer.Deserialize(new JTokenReader(json), typeof(List<TrustedHost>));
+            //currentHostkeys.AddRange(jObj);
             if (currentHostkeys != null)
             {
                 hostkeys = currentHostkeys;
@@ -117,7 +120,9 @@ namespace SSH
             {
                 if ( !(hostMatch.Fingerprint.Contains(fingerprint)) )
                 {
-                    hostMatch.Fingerprint.Add(fingerprint);
+                    string[] curFingerprints = hostMatch.Fingerprint;
+                    Array.Resize(ref curFingerprints, hostMatch.Fingerprint.Length + 1);
+                    hostMatch.Fingerprint[hostMatch.Fingerprint.Length - 1] = fingerprint;
                     keySet = true;
                 }
                 
@@ -181,7 +186,7 @@ namespace SSH
             TrustedHost hostMatch;
             if ( (hostMatch = hostkeys.AsQueryable().SingleOrDefault(x => x.Host == host)) != null )
             {
-                if (hostMatch.Fingerprint.RemoveAll(x => x == fingerprint) > 0 )
+                if (hostMatch.Fingerprint.ToList().RemoveAll(x => x == fingerprint) > 0 )
                 {
                     keyRemoved = true;
                 }

@@ -25,7 +25,7 @@
         },
         {
             "label": "PostBuild",
-            "command": "Copy-Item -Path ${workspaceFolder}/PoshSSH/bin/Debug/netstandard2.0/Posh_SSH.dll -Destination ${workspaceFolder} -Force",
+            "command": "$watch = '${workspaceFolder}/Posh_SSH.dll'; While ( & {try { [IO.File]::OpenWrite($watch).close(); $false } catch {'Lock exists for {0}' -f $watch | Write-Host; $true}} ) { Start-Sleep -Seconds 1 }; Copy-Item -Path '${workspaceFolder}/PoshSSH/bin/Debug/netstandard2.0/Posh_SSH.dll' -Destination ${workspaceFolder} -Force",
             "type": "shell",
             "group": "build",
             "dependsOn": "PreBuild",

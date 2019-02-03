@@ -79,11 +79,12 @@
         {
             "type": "PowerShell",
             "request": "launch",
-            "name": "PowerShell Pester Tests",
+            "name": "PowerShell Pester Tests in Temporary Console",
             "script": "Invoke-Pester",
             "args": ["-Script ${file}"],
             "cwd": "${workspaceFolder}",
-            "createTemporaryIntegratedConsole": true
+            "createTemporaryIntegratedConsole": true,
+            "internalConsoleOptions": "openOnSessionStart"
         }
     ]
 }

@@ -1,4 +1,4 @@
-﻿Import-Module .\Posh-SSH.psd1
+﻿Import-Module $PSScriptRoot\..\..\Posh-SSH\Posh-SSH.psd1
 
 Describe "Remove-SSHSession" {
     Context "Parameters" { 
