@@ -3,9 +3,17 @@
 
 
 #Get public and private function definition files.
-$Classes = @( Get-ChildItem -Path $PSScriptRoot\Classes\*.ps1 -ErrorAction SilentlyContinue )
-$Public  = @( Get-ChildItem -Path $PSScriptRoot\Public\*.ps1 -ErrorAction SilentlyContinue )
-$Private = @( Get-ChildItem -Path $PSScriptRoot\Private\*.ps1 -ErrorAction SilentlyContinue )
+$Assemblies = @( Get-ChildItem -Path $PSScriptRoot\Assembly\*.dll -ErrorAction SilentlyContinue )
+$Classes    = @( Get-ChildItem -Path $PSScriptRoot\Classes\*.ps1 -ErrorAction SilentlyContinue )
+$Public     = @( Get-ChildItem -Path $PSScriptRoot\Public\*.ps1 -ErrorAction SilentlyContinue )
+$Private    = @( Get-ChildItem -Path $PSScriptRoot\Private\*.ps1 -ErrorAction SilentlyContinue )
+
+# Add the assemblies to the session.
+foreach ($assembly in $Assemblies) {
+    "Adding .dll assembly: $($assembly.name)" | Write-Verbose
+    Add-Type -Path $assembly.fullname
+}
+
 
 #Dot source the files
 Foreach($import in @($Classes + $Public + $Private))
